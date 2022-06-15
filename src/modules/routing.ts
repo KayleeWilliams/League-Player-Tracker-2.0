@@ -54,5 +54,5 @@ export const routing = async (input: string) => {
             platform = null;
             region = null;
         }
-    return input.toUpperCase(), platform, region;
+    return new Array(input.toUpperCase(), platform, region);
 }
