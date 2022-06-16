@@ -9,7 +9,7 @@ export const getUserData = async (discordId: string, serverId: string): Promise<
     return userData;
   }
 
-  // If not add the user to the database...
+  // If not add the user to the database
   userData = await usersModel.create({
     discordId: discordId,
     serverId: serverId,
