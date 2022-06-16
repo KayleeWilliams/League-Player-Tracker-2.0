@@ -1,9 +1,9 @@
 import { Document, model, Schema } from "mongoose";
 
-export interface usersInt {
+export interface usersInt extends Document {
   discordId: string;
   serverId: string;
-  accounts: [];
+  accounts: string[][];
 }
 
 export const user = new Schema({

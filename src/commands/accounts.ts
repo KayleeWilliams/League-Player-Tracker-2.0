@@ -29,7 +29,7 @@ export const accounts: command = {
 			const userResult = await getUserData(user.id, interaction.guildId.toString());
 
 			if (userResult.accounts.length != 0 && userResult!) {
-				const accounts: string[] = userResult.accounts;
+				const accounts: string[][] = userResult.accounts;
 				const regions: {[index: string]:any} = {};
 
 				// Loop through all accounts and get usernames + regions 
