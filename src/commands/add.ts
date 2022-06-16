@@ -37,29 +37,51 @@ export const add: command = {
             // Get PUUID
             const puuidResult = await getPUUID(platformResult[1], interaction.options.getString("username", true));
 
-            // Get user 
-            const userResult = await getUserData(user.id, interaction.guildId!.toString());
-            
-            // Update the database
-            const accountRes = await newAccount(userResult, puuidResult.puuid, platformResult[1], platformResult[2], platformResult[0])
+            if (puuidResult != null) {
+                // Get user 
+                const userResult = await getUserData(user.id, interaction.guildId!.toString());
+                
+                // Update the database
+                const accountRes = await newAccount(userResult, puuidResult.puuid, platformResult[1], platformResult[2], platformResult[0])
 
-            // If successful display success message
-            if (accountRes) {
-                 const embed = new MessageEmbed()
-                    .setTitle('Success!')
-                    .setDescription(`${interaction.options.getString("username")} has been added to ${user.username}`)
+                // If successful display success message
+                if (accountRes != null) {
+                    const embed = new MessageEmbed()
+                        .setTitle('Success!')
+                        .setDescription(`${interaction.options.getString("username")} has been added to ${user.username}`)
+                        .setColor('#61C554')
+                        .setTimestamp()
+
+                    await interaction.editReply({ embeds: [embed] });   
+                } 
+
+                else {
+                    const embed = new MessageEmbed()
+                        .setTitle('Error!')
+                        .setDescription(`${interaction.options.getString("username")} is already added to this user`)
+                        .setColor('#BD554C')
+                        .setTimestamp()           
+                    await interaction.editReply({ embeds: [embed] });
+                }
+            }
+
+            // If the puuid returns anything that isnt a puuid
+            else {
+                const embed = new MessageEmbed()
+                    .setTitle('Error!')
+                    .setDescription(`${interaction.options.getString("username")} could not be found`)
                     .setColor('#BD554C')
-                    .setTimestamp()
-
-                await interaction.editReply({ embeds: [embed] });   
+                    .setTimestamp()           
+                await interaction.editReply({ embeds: [embed] });
             }
         }
 
+        // If the region can't be found... 
         else {
             const embed = new MessageEmbed()
                 .setTitle('Error!')
                 .setDescription('The region you entered could not be found.')
-                .setColor('#61C554')
+                .setColor('#BD554C')
                 .setTimestamp()
             
             await interaction.editReply({ embeds: [embed] });

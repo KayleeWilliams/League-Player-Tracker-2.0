@@ -8,6 +8,13 @@ export const getPUUID = async (platform: string, username: string) => {
         },
     };
 
-    const response = await axios.get(uri, config)
-    return response.data
+    try {
+        const response = await axios.get(uri, config);
+        return response.data
+
+    } catch(err){
+        if (err.response) {
+            return null
+        }
+    }
 }
