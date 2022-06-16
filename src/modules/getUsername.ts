@@ -8,6 +8,6 @@ export const getUsername = async (platform: string, puuid: string) => {
         },
     };
 
-    const response = await axios.get(uri, config)
+    const response = await axios.get(encodeURI(uri), config)
     return response.data
 }

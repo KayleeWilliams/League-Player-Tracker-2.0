@@ -9,7 +9,7 @@ export const getPUUID = async (platform: string, username: string) => {
     };
 
     try {
-        const response = await axios.get(uri, config);
+        const response = await axios.get(encodeURI(uri), config);
         return response.data
 
     } catch(err){

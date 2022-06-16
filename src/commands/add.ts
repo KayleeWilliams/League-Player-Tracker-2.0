@@ -5,7 +5,7 @@ import { getPUUID } from "../modules/getPUUID"
 import { routing } from "../modules/routing"
 import { getUserData } from "../modules/getUser";
 import { newAccount } from "../modules/newAccount"
-
+import { createEmbed } from "../modules/createEmbed"
 
 export const add: command = {
 	data: new SlashCommandBuilder()
@@ -46,44 +46,26 @@ export const add: command = {
 
                 // If successful display success message
                 if (accountRes != null) {
-                    const embed = new MessageEmbed()
-                        .setTitle('Success!')
-                        .setDescription(`${interaction.options.getString("username")} has been added to ${user.username}`)
-                        .setColor('#61C554')
-                        .setTimestamp()
-
+                    const embed = await createEmbed('Success!', `${interaction.options.getString("username")} has been added to ${user.username}`, 3066993)
                     await interaction.editReply({ embeds: [embed] });   
                 } 
 
-                else {
-                    const embed = new MessageEmbed()
-                        .setTitle('Error!')
-                        .setDescription(`${interaction.options.getString("username")} is already added to this user`)
-                        .setColor('#BD554C')
-                        .setTimestamp()           
+                else { 
+                    const embed = await createEmbed('Error', `${interaction.options.getString("username")} is already added to this user`, 15158332)
                     await interaction.editReply({ embeds: [embed] });
                 }
             }
 
             // If the puuid returns anything that isnt a puuid
             else {
-                const embed = new MessageEmbed()
-                    .setTitle('Error!')
-                    .setDescription(`${interaction.options.getString("username")} could not be found`)
-                    .setColor('#BD554C')
-                    .setTimestamp()           
+                const embed = await createEmbed('Error', `${interaction.options.getString("username")} could not be found`, 15158332)
                 await interaction.editReply({ embeds: [embed] });
             }
         }
 
         // If the region can't be found... 
         else {
-            const embed = new MessageEmbed()
-                .setTitle('Error!')
-                .setDescription('The region you entered could not be found.')
-                .setColor('#BD554C')
-                .setTimestamp()
-            
+            const embed = await createEmbed('Error', 'The region you entered could not be found.', 15158332)
             await interaction.editReply({ embeds: [embed] });
         }
   },
