@@ -21,5 +21,6 @@ import { guildCreate } from "./events/guildCreate";
     // Connect to MongoDB
     await connectDatabase();
 
+
     await bot.login(process.env.DISCORD_TOKEN);
 })();
