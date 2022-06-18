@@ -4,6 +4,7 @@ import { getLatestMatch } from "./getLatestMatch";
 import { lastMatch } from "./updateLastMatch";
 import { Client, MessageEmbed } from "discord.js";
 import { getUserData } from "./getUser";
+import { convertChamp } from "./convertChamp";
 
 export const checkMatches = async (bot: Client) => {
 
@@ -28,12 +29,13 @@ export const checkMatches = async (bot: Client) => {
 
                     // Create embed
                     const embed = new MessageEmbed()
-                        .setTimestamp();
+                        .setTimestamp()
+                        .setDescription(`[Click here for more details](https://www.leagueofgraphs.com/match/${account[4].toLowerCase()}/${matchData.matchId.split(/_/)[1]})`) 
+                        .setThumbnail(`attachment://${matchData.champ}.png`)
 
                     const discordUser = await bot.users.fetch(user.discordId);
 
-
-                    if (matchData) {
+                    if (matchData.win) {
                         embed.setTitle(`${discordUser.username} just won a game!`);
                         embed.setColor(3066993);
                     } else {
@@ -41,8 +43,10 @@ export const checkMatches = async (bot: Client) => {
                         embed.setColor(15158332);
                     }
 
+                    const displayName = await convertChamp(matchData.champ);
+
                     embed.addFields(
-                        { name: 'Champion', value: `${matchData.champ}`, inline: true },
+                        { name: 'Champion', value: `${displayName}`, inline: true },
                         { name: 'Role', value: `${matchData.position}`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
                         { name: 'KDA', value: `${matchData.kda.join('/')}`, inline: true },
@@ -50,13 +54,12 @@ export const checkMatches = async (bot: Client) => {
                         { name: '\u200b', value: '\u200b', inline: true },
                     );
 
-                    embed.setFooter({ text: `The match took ${matchData.gameLength[0]}:${matchData.gameLength[1]}` });
-
+                    embed.setFooter({ text: `The match took ${String(matchData.gameLength[0]).padStart(2, '0')}:${String(matchData.gameLength[1]).padStart(2, '0')}` });
 
                     // Send the embed
                     const channel = await bot.channels.cache.get(server.channelId);
                     if (channel.type == "GUILD_TEXT") {
-                        channel.send({ embeds: [embed] });
+                        channel.send({ embeds: [embed], files: [`./src/champions/${matchData.champ}.png`]});
                     }
                 }
             }
