@@ -1,6 +1,7 @@
 import serversModel from "../database/models/serversModel";
 import usersModel from "../database/models/usersModel";
-import { getLatestMatch } from "./getLatestMatch";
+import { getMatches } from "./getMatches";
+import { getMatchData } from "./getMatchData";
 import { lastMatch } from "./updateLastMatch";
 import { Client, MessageEmbed } from "discord.js";
 import { getUserData } from "./getUser";
@@ -18,7 +19,13 @@ export const checkMatches = async (bot: Client) => {
             for (let account of user.accounts) {
                 
                 // Check if the user has played any matches 
-                const matchData = await getLatestMatch(account[3], account[0], account[1]);
+                const matches = await getMatches(account[3], account[0], Math.floor((Date.now() / 1000) - 3600));
+                
+                // If they have get info on matches
+                let matchData = null;
+                if ((matches != null) && (matches[0] != account[1])) {
+                    matchData = await getMatchData(account[3], account[0], matches[0]);
+                }
 
                 // If matches, display result...
                 if (matchData != null) {
