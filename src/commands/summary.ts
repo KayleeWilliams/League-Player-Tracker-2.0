@@ -30,6 +30,7 @@ export const summary: command = {
 			if (userResult.accounts.length != 0 && userResult!) {
 				const accounts: string[][] = userResult.accounts;
 
+				let data = false;
 				let champs: {[index: string]: number} = {};
 				let positions: {[index: string]: number} = {};
 
@@ -55,6 +56,7 @@ export const summary: command = {
                             const matchData = await getMatchData(accounts[i][3], accounts[i][0], matches[m]);
 
 							if (matchData != null) {
+
 								sum.wins.push(matchData.win);
 								sum.kills += matchData.kda[0];
 								sum.deaths += matchData.kda[1];
@@ -74,28 +76,35 @@ export const summary: command = {
 
 								champs[matchData.champ] += 1;
 								positions[matchData.position] += 1;
-
+								data = true; 
 							}
                         }
                     }
 				}  
 				
+				if (!data) {
+					const embed = await createEmbed('Error', `${interaction.options.getUser('user')!.username} has not played any games!`, 15158332)
+					await interaction.editReply({ embeds: [embed] });
+					return 
+				}
+
+				// Make data presentable
 				const games = sum.matchIds.length
 
 				const winrate = ((sum.wins.filter(Boolean).length/sum.wins.length) * 100).toFixed(2);
 
 				const sortedChamps = Object.entries(champs).sort((a,b) => b[1]-a[1]).slice(0, 3)
-				const sortedRoles = Object.entries(positions).sort((a,b) => b[1]-a[1]).slice(0, 2)
+				const sortedRoles = Object.entries(positions).sort((a,b) => b[1]-a[1]).slice(0, 3)
 
 				let displayChamps = []
 				let displayRoles = []
 
 				for (let i = 0; i < sortedChamps.length; i++) {
-					displayChamps.push(await convertChamp(sortedChamps[i][0]));
+					displayChamps.push(`${await convertChamp(sortedChamps[i][0])}` );
 				}
 
 				for (let i = 0; i < sortedRoles.length; i++) {
-					displayRoles.push(sortedRoles[i][0]);
+					displayRoles.push(`${sortedRoles[i][0]}`);
 				}
 
 				const avgKills = (sum.kills/games).toFixed(1);
@@ -104,17 +113,21 @@ export const summary: command = {
 				const avgCsTotal = (sum.csTotal/games).toFixed(0);
 				const avgCsM = (sum.csAverage/games).toFixed(1);
 
-
+				// Display output
 				const embed = new MessageEmbed()
 					.setTitle(`${interaction.options.getUser('user')!.username}'s 7 Day Summary!`)
 					.setThumbnail(`attachment://${sortedChamps[0][0]}.png`)
 					.addFields(
-                        { name: 'Games Played', value: `${games}`, inline: false },
-                        { name: 'Winrate', value: `${winrate}%`, inline: false },
-						{ name: 'Top Champs', value: `${displayChamps.join(', ')}`, inline: false },
-						{ name: 'Top Roles', value: `${displayRoles.join(', ')}`, inline: false },
-						{ name: 'Average KDA', value: `${avgKills} / ${avgDeaths} / ${avgAssists}`, inline: false },
-						{ name: 'Average CS', value: `${avgCsTotal} (${avgCsM})`, inline: false },
+						{ name: 'Winrate', value: `${winrate}%`, inline: true },
+						{ name: 'Games Played', value: `${games}`, inline: true },
+						{ name: '\u200b', value: '\u200b', inline: true },
+						{ name: 'Average KDA', value: `${avgKills}/${avgDeaths}/${avgAssists}`, inline: true },
+						{ name: 'Average CS', value: `${avgCsTotal} (${avgCsM})`, inline: true },
+						{ name: '\u200b', value: '\u200b', inline: true },
+						{ name: 'Top Champs', value: `${displayChamps.join('\n')}`, inline: true },
+						{ name: 'Top Roles', value: `${displayRoles.join('\n')}`, inline: true },
+						{ name: '\u200b', value: '\u200b', inline: true },
+
                     );
 
 				if (((sum.wins.filter(Boolean).length/sum.wins.length) * 100) >= 50) {
@@ -127,12 +140,6 @@ export const summary: command = {
 				// console.log(champs);
 				await interaction.editReply({ embeds: [embed], files: [`./src/champions/${sortedChamps[0][0]}.png`] });
             }
-
-			else {
-				const embed = await createEmbed('Error', `${interaction.options.getString("username")} has not played any games!`, 15158332)
-                await interaction.editReply({ embeds: [embed] });
-			}
-
         }
     }
 }

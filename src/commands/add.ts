@@ -25,7 +25,7 @@ export const add: command = {
 				.setRequired(true)),
 
 	run: async (interaction) => {
-		await interaction.deferReply();
+		await interaction.deferReply({ ephemeral: true });
 		const user = interaction.options.getUser("user", true);
 
         // Get Platform 
