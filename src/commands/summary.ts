@@ -29,7 +29,7 @@ export const summary: command = {
 
 			if (userResult.accounts.length != 0 && userResult!) {
 				const accounts: string[][] = userResult.accounts;
-				// const regions: {[index: string]:any} = {};
+
 				let champs: {[index: string]: number} = {};
 				let positions: {[index: string]: number} = {};
 
@@ -51,7 +51,6 @@ export const summary: command = {
 
 					// Loop through matches and add output to arrays
                     if (matches.length != 0){
-                        //for (let k = 0; i < matches.length; k++) {
 						for (let m in matches) {
                             const matchData = await getMatchData(accounts[i][3], accounts[i][0], matches[m]);
 
@@ -61,7 +60,7 @@ export const summary: command = {
 								sum.deaths += matchData.kda[1];
 								sum.assists += matchData.kda[2]; 
 								sum.csTotal += matchData.csTotal;
-								sum.csAverage += matchData.csAverage;
+								sum.csAverage += +matchData.csAverage;
 								sum.matchIds.push(matchData.matchId);
 
 
@@ -88,7 +87,6 @@ export const summary: command = {
 				const sortedChamps = Object.entries(champs).sort((a,b) => b[1]-a[1]).slice(0, 3)
 				const sortedRoles = Object.entries(positions).sort((a,b) => b[1]-a[1]).slice(0, 2)
 
-				// console.log(sortedChamps.slice(0, 3))
 				let displayChamps = []
 				let displayRoles = []
 

@@ -57,7 +57,7 @@ export const checkMatches = async (bot: Client) => {
                         { name: 'Role', value: `${matchData.position}`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
                         { name: 'KDA', value: `${matchData.kda.join('/')}`, inline: true },
-                        { name: 'CS', value: `${matchData.csTotal} Total CS\n ${matchData.csAverage} CS/Min`, inline: true },
+                        { name: 'CS', value: `${matchData.csTotal} (${matchData.csAverage})`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
                     );
 

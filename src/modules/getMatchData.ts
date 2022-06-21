@@ -24,7 +24,7 @@ export const getMatchData = async (region: string,  puuid: string, matchId: stri
 
                 // Get average & total creep score
                 const csTotal = participant.totalMinionsKilled + participant.neutralMinionsKilled;
-                const csAverage = (csTotal / gameMinutes).toFixed(2);
+                const csAverage = (csTotal / gameMinutes).toFixed(1);
 
                 let position = null;
 
@@ -43,7 +43,7 @@ export const getMatchData = async (region: string,  puuid: string, matchId: stri
                     kda: [participant.kills, participant.deaths, participant.assists],
                     position: position,
                     csTotal: csTotal,
-                    csAverage: parseInt(csAverage),
+                    csAverage: csAverage,
                     gameLength: [gameMinutes, gameSeconds],
                     matchId: matchId,
                 };
