@@ -1,8 +1,10 @@
+
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import { command } from "../interfaces/command";
 import { getUserData } from "../modules/getUser";
 import { getUsername } from "../modules/getUsername"
+import { createEmbed } from "../modules/createEmbed"
 
 export const accounts: command = {
 	data: new SlashCommandBuilder()

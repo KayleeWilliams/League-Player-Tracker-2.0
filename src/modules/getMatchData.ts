@@ -43,7 +43,7 @@ export const getMatchData = async (region: string,  puuid: string, matchId: stri
                     kda: [participant.kills, participant.deaths, participant.assists],
                     position: position,
                     csTotal: csTotal,
-                    csAverage: csAverage,
+                    csAverage: parseInt(csAverage),
                     gameLength: [gameMinutes, gameSeconds],
                     matchId: matchId,
                 };
