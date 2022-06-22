@@ -3,7 +3,6 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import { command } from "../interfaces/command";
 import { getChannel } from "../modules/getChannel";
-import { updateChannel } from "../modules/updateChannel"
 import { createEmbed } from "../modules/createEmbed"
 
 export const settings: command = {

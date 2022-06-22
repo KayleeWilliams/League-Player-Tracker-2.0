@@ -12,6 +12,14 @@ export const summary: command = {
 	data: new SlashCommandBuilder()
     	.setName('summary')
 		.setDescription('Get a 7 day summary of a users games')
+		.addStringOption(option =>
+                    option.setName('range')
+                        .setDescription('Summary from range')
+                        .setRequired(true)
+                        .addChoices(
+                            { name: 'week', value: 'week' },
+                            { name: 'day', value: 'day' }
+                    	))
 		.addUserOption(option =>
 			option.setName('user')
 				.setDescription('User to summarise')
@@ -21,6 +29,7 @@ export const summary: command = {
         
         await interaction.deferReply();
 		const user = interaction.options.getUser("user", true);
+		const range = interaction.options.getString("range", true);
 
 		if (interaction.guildId!) {
 
@@ -47,8 +56,14 @@ export const summary: command = {
 				// Loop through all accounts and get usernames + regions 
 				for (let i = 0; i < accounts.length; i++) {
 
+					
 					// Get matches 
-					const matches = await getMatches(accounts[i][3], accounts[i][0], Math.floor((Date.now() / 1000) - 604800));
+					var time = 604800;
+					if (range == 'day') {
+						time = 86400;
+					}
+ 
+					const matches = await getMatches(accounts[i][3], accounts[i][0], Math.floor((Date.now() / 1000) - time));
 
 					// Loop through matches and add output to arrays
                     if (matches.length != 0){
@@ -134,6 +149,10 @@ export const summary: command = {
 					embed.setColor(3066993);
 				} else {
 					embed.setColor(15158332);
+				}
+
+				if (range == 'day') {
+					embed.setTitle(`${interaction.options.getUser('user')!.username}'s 24 Hour Summary!`)
 				}
 
 				
