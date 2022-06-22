@@ -18,7 +18,20 @@ export const remove: command = {
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('The accounts region e.g. EUW')
-				.setRequired(true))
+				.setRequired(true)
+                .addChoices(
+                    { name: 'KR', value: 'KR' },
+                    { name: 'JP', value: 'JP' },
+                    { name: 'EUW', value: 'EUW' },
+                    { name: 'EUNE', value: 'EUNE' },
+                    { name: 'TR', value: 'TR' },
+                    { name: 'RU', value: 'RU' },
+                    { name: 'NA', value: 'NA' },
+                    { name: 'BR', value: 'BR' },
+                    { name: 'LAN', value: 'LAN' },  
+                    { name: 'LAS', value: 'LAS' },
+                    { name: 'OCE', value: 'OCE' }                                                                               
+                ))
 		.addStringOption(option =>
 			option.setName('username')
 				.setDescription('Current League Username')

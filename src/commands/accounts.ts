@@ -38,11 +38,13 @@ export const accounts: command = {
 					const uri = `https://${accounts[i][2]}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${accounts[i][0]}`;
 					const response = await queryRiot(uri);
 
-					if (Object.keys(regions).includes(accounts[i][4]) == false) {
-						regions[accounts[i][4]] = new Array();
-					}
+					if (response != null) {
+						if (Object.keys(regions).includes(accounts[i][4]) == false) {
+							regions[accounts[i][4]] = new Array();
+						}
 
-					regions[accounts[i][4]].push(response.name);
+						regions[accounts[i][4]].push(response.name);
+					}
 				}
 				
 				for (const [region, usernames] of Object.entries(regions)) {
