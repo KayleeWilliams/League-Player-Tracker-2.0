@@ -3,8 +3,8 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import { command } from "../interfaces/command";
 import { getUserData } from "../modules/getUser";
-import { getUsername } from "../modules/getUsername"
 import { createEmbed } from "../modules/createEmbed"
+import { queryRiot } from "../modules/riotAPI";
 
 export const accounts: command = {
 	data: new SlashCommandBuilder()
@@ -35,13 +35,14 @@ export const accounts: command = {
 
 				// Loop through all accounts and get usernames + regions 
 				for (let i = 0; i < accounts.length; i++) {
-					const nameResponse = await getUsername(accounts[i][2], accounts[i][0]);
+					const uri = `https://${accounts[i][2]}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${accounts[i][0]}`;
+					const response = await queryRiot(uri);
 
 					if (Object.keys(regions).includes(accounts[i][4]) == false) {
 						regions[accounts[i][4]] = new Array();
 					}
 
-					regions[accounts[i][4]].push(nameResponse.name);
+					regions[accounts[i][4]].push(response.name);
 				}
 				
 				for (const [region, usernames] of Object.entries(regions)) {

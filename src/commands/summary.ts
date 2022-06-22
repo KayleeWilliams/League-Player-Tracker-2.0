@@ -2,11 +2,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import { command } from "../interfaces/command";
-import { getUserData } from "../modules/getUser"
-import { getMatches } from "../modules/getMatches";
+import { queryRiot } from "../modules/riotAPI";
+import { getUserData } from "../modules/getUser";
 import { getMatchData } from "../modules/getMatchData";
 import { convertChamp } from "../modules/convertChamp";
-import { createEmbed } from "../modules/createEmbed"
+import { createEmbed } from "../modules/createEmbed";
 
 export const summary: command = {
 	data: new SlashCommandBuilder()
@@ -56,46 +56,47 @@ export const summary: command = {
 				// Loop through all accounts and get usernames + regions 
 				for (let i = 0; i < accounts.length; i++) {
 
-					
 					// Get matches 
 					var time = 604800;
 					if (range == 'day') {
 						time = 86400;
 					}
  
-					const matches = await getMatches(accounts[i][3], accounts[i][0], Math.floor((Date.now() / 1000) - time));
+					let uri = `https://${accounts[i][3]}.api.riotgames.com/lol/match/v5/matches/by-puuid/${accounts[i][0]}/ids?startTime=${Math.floor((Date.now() / 1000) - time)}&queue=420&count=100`;
+                	const matches = await queryRiot(uri);
 
 					// Loop through matches and add output to arrays
-                    if (matches.length != 0){
-						for (let m in matches) {
-                            const matchData = await getMatchData(accounts[i][3], accounts[i][0], matches[m]);
+					if (matches) {
+						if (matches.length != 0){
+							for (let m in matches) {
+								const matchData = await getMatchData(accounts[i][3], accounts[i][0], matches[m]);
 
-							if (matchData != null) {
+								if (matchData != null) {
 
-								sum.wins.push(matchData.win);
-								sum.kills += matchData.kda[0];
-								sum.deaths += matchData.kda[1];
-								sum.assists += matchData.kda[2]; 
-								sum.csTotal += matchData.csTotal;
-								sum.csAverage += +matchData.csAverage;
-								sum.matchIds.push(matchData.matchId);
+									sum.wins.push(matchData.win);
+									sum.kills += matchData.kda[0];
+									sum.deaths += matchData.kda[1];
+									sum.assists += matchData.kda[2]; 
+									sum.csTotal += matchData.csTotal;
+									sum.csAverage += +matchData.csAverage;
+									sum.matchIds.push(matchData.matchId);
 
+									if (Object.keys(champs).includes(matchData.champ) == false) {
+										champs[matchData.champ] = 0;
+									}
 
-								if (Object.keys(champs).includes(matchData.champ) == false) {
-									champs[matchData.champ] = 0;
+									if (Object.keys(positions).includes(matchData.position) == false) {
+										positions[matchData.position] = 0;
+									}
+
+									champs[matchData.champ] += 1;
+									positions[matchData.position] += 1;
+									data = true; 
 								}
-
-								if (Object.keys(positions).includes(matchData.position) == false) {
-									positions[matchData.position] = 0;
-								}
-
-								champs[matchData.champ] += 1;
-								positions[matchData.position] += 1;
-								data = true; 
 							}
-                        }
-                    }
-				}  
+						}
+					} 
+				} 
 				
 				if (!data) {
 					const embed = await createEmbed('Error', `${interaction.options.getUser('user')!.username} has not played any games!`, 15158332)

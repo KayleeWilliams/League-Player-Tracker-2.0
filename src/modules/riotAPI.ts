@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-export const getPUUID = async (platform: string, username: string) => {
-    const uri = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${username}`;
+export const queryRiot = async (uri: string) => {
     const config = {
         headers: {
             "X-Riot-Token": `${process.env.RIOT_API_KEY}`,
@@ -11,10 +10,13 @@ export const getPUUID = async (platform: string, username: string) => {
     try {
         const response = await axios.get(encodeURI(uri), config);
         return response.data
-
-    } catch(err){
+    } 
+    
+    catch(err){
         if (err.response) {
+            // console.log(err.response);
             return null
         }
     }
+
 }

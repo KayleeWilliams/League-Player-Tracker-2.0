@@ -1,11 +1,11 @@
 import serversModel from "../database/models/serversModel";
 import usersModel from "../database/models/usersModel";
-import { getMatches } from "./getMatches";
 import { getMatchData } from "./getMatchData";
 import { lastMatch } from "./updateLastMatch";
 import { Client, MessageEmbed } from "discord.js";
 import { getUserData } from "./getUser";
 import { convertChamp } from "./convertChamp";
+import { queryRiot } from "./riotAPI";
 
 export const checkMatches = async (bot: Client) => {
 
@@ -19,8 +19,10 @@ export const checkMatches = async (bot: Client) => {
             for (let account of user.accounts) {
                 
                 // Check if the user has played any matches 
-                const matches = await getMatches(account[3], account[0], Math.floor((Date.now() / 1000) - 3600));
-                
+                const startTime = Math.floor((Date.now() / 1000) - 3600);
+                const uri = `https://${account[3]}.api.riotgames.com/lol/match/v5/matches/by-puuid/${account[0]}/ids?startTime=${startTime}&queue=420&count=100`;
+                const matches = await queryRiot(uri);
+
                 // If they have get info on matches
                 let matchData = null;
                 if ((matches != null) && (matches[0] != account[1])) {

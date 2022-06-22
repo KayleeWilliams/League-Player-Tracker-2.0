@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { MessageEmbed } from "discord.js";
 import { command } from "../interfaces/command";
-import { getPUUID } from "../modules/getPUUID"
+import { queryRiot } from "../modules/riotAPI";
 import { routing } from "../modules/routing"
 import { getUserData } from "../modules/getUser";
-import { removeAccount } from "../modules/removeAccount"
-import { createEmbed } from "../modules/createEmbed"
+import { removeAccount } from "../modules/removeAccount";
+import { createEmbed } from "../modules/createEmbed";
 
 export const remove: command = {
 	data: new SlashCommandBuilder()
@@ -35,7 +35,8 @@ export const remove: command = {
         // Get PUUID for account if platform is correct 
         if (platformResult[1] != null) {
             // Get PUUID
-            const puuidResult = await getPUUID(platformResult[1], interaction.options.getString("username", true));
+            const uri = `https://${platformResult[1]}.api.riotgames.com/lol/summoner/v4/summoners/by-name/${interaction.options.getString("username", true)}`;
+            const puuidResult = await queryRiot(uri);
 
             if (puuidResult != null) {
                 // Get user 

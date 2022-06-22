@@ -1,24 +1,18 @@
-import { getMatches } from "./getMatches";
+import { queryRiot } from "./riotAPI";
 import axios from 'axios';
 
 export const getMatchData = async (region: string,  puuid: string, matchId: string) => {
     // Get account matches
     const uri = `https://${region}.api.riotgames.com/lol/match/v5/matches/${matchId}`;
-    const config = {
-        headers: {
-            "X-Riot-Token": `${process.env.RIOT_API_KEY}`,
-        },
-    };
+    const response = await queryRiot(uri);
 
-    try {
-        const response = await axios.get(encodeURI(uri), config);
-        
+    if (response != null) {
         // Loop through participiants till matching
-        for (let participant of response.data.info.participants) {
+        for (let participant of response.info.participants) {
             if (participant.puuid == puuid) {
 
                 // Calculate game length
-                const epoch = response.data.info.gameDuration;
+                const epoch = response.info.gameDuration;
                 const gameMinutes = Math.floor(epoch / 60);
                 const gameSeconds = epoch % 60;
 
@@ -48,12 +42,10 @@ export const getMatchData = async (region: string,  puuid: string, matchId: stri
                     matchId: matchId,
                 };
 
-                return data
+                return data;
             }
         }
-    } catch(err){
-        if (err.response) {
-            return null
-        }
+    } else {
+        return null;
     }
 }
