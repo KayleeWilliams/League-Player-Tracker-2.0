@@ -37,7 +37,6 @@ export const checkMatches = async (bot: Client) => {
                     // Create embed
                     const embed = new MessageEmbed()
                         .setTimestamp()
-                        .setDescription(`[Click here for more details](https://www.leagueofgraphs.com/match/${account[4].toLowerCase()}/${matchData.matchId.split(/_/)[1]})`) 
                         .setThumbnail(`attachment://${matchData.champ}.png`)
 
                     const discordUser = await bot.users.fetch(user.discordId);
@@ -62,7 +61,11 @@ export const checkMatches = async (bot: Client) => {
                     );
 
                     embed.setFooter({ text: `The match took ${String(matchData.gameLength[0]).padStart(2, '0')}:${String(matchData.gameLength[1]).padStart(2, '0')}` });
-
+                    
+                    if (server.matchUrl === true) {
+                        embed.setDescription(`[Click here for more details](https://www.leagueofgraphs.com/match/${account[4].toLowerCase()}/${matchData.matchId.split(/_/)[1]})`) 
+                    }
+                    
                     // Send the embed
                     const channel = await bot.channels.cache.get(server.channelId);
                     if (channel.type == "GUILD_TEXT") {

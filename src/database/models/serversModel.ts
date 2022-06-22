@@ -3,6 +3,7 @@ import { Document, model, Schema } from "mongoose";
 export interface serversInt extends Document {
   serverId: string;
   channelId: string;
+  matchUrl: Boolean,
   date: Number, 
 
 }
@@ -10,6 +11,7 @@ export interface serversInt extends Document {
 export const server = new Schema({
   serverId: String,
   channelId: String,
+  matchUrl: Boolean,
   date: Number, 
 });
 

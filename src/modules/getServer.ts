@@ -15,6 +15,7 @@ export const getServerData = async (guild): Promise<serversInt> => {
   serverData = await serversModel.create({
     serverId: guild.id,
     channelId: channel.id,
+    matchUrl: true,
     date: Date.now(),
   });
 
