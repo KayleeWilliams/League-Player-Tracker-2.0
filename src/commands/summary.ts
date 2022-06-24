@@ -116,11 +116,11 @@ export const summary: command = {
 				let displayRoles = []
 
 				for (let i = 0; i < sortedChamps.length; i++) {
-					displayChamps.push(`${await convertChamp(sortedChamps[i][0])}` );
+					displayChamps.push(`${await convertChamp(sortedChamps[i][0])} (${sortedChamps[i][1]})` );
 				}
 
 				for (let i = 0; i < sortedRoles.length; i++) {
-					displayRoles.push(`${sortedRoles[i][0]}`);
+					displayRoles.push(`${sortedRoles[i][0]} (${sortedRoles[i][1]})`);
 				}
 
 				const avgKills = (sum.kills/games).toFixed(1);

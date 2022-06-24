@@ -16,6 +16,7 @@ export const getServerData = async (guild): Promise<serversInt> => {
     serverId: guild.id,
     channelId: channel.id,
     matchUrl: true,
+    matchInfo: true,
     date: Date.now(),
   });
 

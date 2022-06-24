@@ -26,9 +26,21 @@ export const settings: command = {
                         .setDescription('Show Match URL')
                         .setRequired(true)
                         .addChoices(
-                            { name: 'true', value: 'true' },
-                            { name: 'false', value: 'false' }
-                        ))),
+                            { name: 'show', value: 'true' },
+                            { name: 'hide', value: 'false' }
+                        )))
+        .addSubcommand(subcommand =>
+                subcommand
+                    .setName('match-info')
+                    .setDescription('Display match info e.g. champion, kda etc')
+                    .addStringOption(option =>
+                        option.setName('status')
+                            .setDescription('Show Match Info')
+                            .setRequired(true)
+                            .addChoices(
+                                { name: 'show', value: 'true' },
+                                { name: 'hide', value: 'false' }
+                            ))),
 
 	run: async (interaction) => {
 		await interaction.deferReply();
@@ -67,6 +79,30 @@ export const settings: command = {
                 
                 await server.save()
                 embed = await createEmbed('Success', `Show Match URL set to ${choice}!`, 3066993);
+            }
+
+             await interaction.editReply({ embeds: [embed] });
+        }
+
+        // Set Match Info Visibilitu
+        if (interaction.options.getSubcommand() === 'match-info') {
+            const choice = interaction.options.getString("status", true);
+            var mode = (choice === 'true');
+            
+            var embed;
+            if (mode === server.matchInfo ){
+                embed = await createEmbed('Error', `This setting is already ${choice}!`, 15158332);
+
+            } else {
+                // Update
+                if (mode) {
+                    server.matchInfo = true;
+                } else {
+                    server.matchInfo = false;
+                }
+                
+                await server.save()
+                embed = await createEmbed('Success', `Show match info set to ${choice}!`, 3066993);
             }
 
              await interaction.editReply({ embeds: [embed] });

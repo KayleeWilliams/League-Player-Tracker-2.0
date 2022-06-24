@@ -36,12 +36,14 @@ export const checkMatches = async (bot: Client) => {
                     const toUpdate = await getUserData(user.discordId, user.serverId)
                     await lastMatch(toUpdate, account[0], account[2], matchData.matchId);
 
+                    
                     // Create embed
                     const embed = new MessageEmbed()
                         .setTimestamp()
-                        .setThumbnail(`attachment://${matchData.champ}.png`)
+                        .setFooter({ text: `The match took ${String(matchData.gameLength[0]).padStart(2, '0')}:${String(matchData.gameLength[1]).padStart(2, '0')}` });
 
                     const discordUser = await bot.users.fetch(user.discordId);
+                    const displayName = await convertChamp(matchData.champ);
 
                     if (matchData.win) {
                         embed.setTitle(`${discordUser.username} just won a game!`);
@@ -50,28 +52,32 @@ export const checkMatches = async (bot: Client) => {
                         embed.setTitle(`${discordUser.username} just lost a game!`);
                         embed.setColor(15158332);
                     }
-
-                    const displayName = await convertChamp(matchData.champ);
-
-                    embed.addFields(
-                        { name: 'Champion', value: `${displayName}`, inline: true },
-                        { name: 'Role', value: `${matchData.position}`, inline: true },
-                        { name: '\u200b', value: '\u200b', inline: true },
-                        { name: 'KDA', value: `${matchData.kda.join('/')}`, inline: true },
-                        { name: 'CS', value: `${matchData.csTotal} (${matchData.csAverage})`, inline: true },
-                        { name: '\u200b', value: '\u200b', inline: true },
-                    );
-
-                    embed.setFooter({ text: `The match took ${String(matchData.gameLength[0]).padStart(2, '0')}:${String(matchData.gameLength[1]).padStart(2, '0')}` });
                     
                     if (server.matchUrl === true) {
                         embed.setDescription(`[Click here for more details](https://www.leagueofgraphs.com/match/${account[4].toLowerCase()}/${matchData.matchId.split(/_/)[1]})`) 
+                    }
+
+                    // If match info on
+                    if (server.matchInfo === true) {
+                        embed.setThumbnail(`attachment://${matchData.champ}.png`)
+                        embed.addFields(
+                            { name: 'Champion', value: `${displayName}`, inline: true },
+                            { name: 'Role', value: `${matchData.position}`, inline: true },
+                            { name: '\u200b', value: '\u200b', inline: true },
+                            { name: 'KDA', value: `${matchData.kda.join('/')}`, inline: true },
+                            { name: 'CS', value: `${matchData.csTotal} (${matchData.csAverage})`, inline: true },
+                            { name: '\u200b', value: '\u200b', inline: true },
+                        );
                     }
                     
                     // Send the embed
                     const channel = await bot.channels.cache.get(server.channelId);
                     if (channel.type == "GUILD_TEXT") {
-                        channel.send({ embeds: [embed], files: [`./src/champions/${matchData.champ}.png`]});
+                        if (server.matchInfo === true) {
+                            channel.send({ embeds: [embed], files: [`./src/champions/${matchData.champ}.png`]});
+                        } else {
+                            channel.send({ embeds: [embed] });
+                        }
                     }
                 }
             }
