@@ -50,6 +50,8 @@ export const summary: command = {
 					assists: 0,
 					csTotal: 0,
 					csAverage: 0,
+					csAt10: 0,
+					totalTime: [0, 0],
 					matchIds: [],
 				} 
 
@@ -80,6 +82,9 @@ export const summary: command = {
 									sum.csTotal += matchData.csTotal;
 									sum.csAverage += +matchData.csAverage;
 									sum.matchIds.push(matchData.matchId);
+									sum.totalTime[0] += matchData.gameLength[0];
+									sum.totalTime[1] += matchData.gameLength[0];
+									sum.csAt10 += matchData.cs10;
 
 									if (Object.keys(champs).includes(matchData.champ) == false) {
 										champs[matchData.champ] = 0;
@@ -128,6 +133,8 @@ export const summary: command = {
 				const avgAssists = (sum.assists/games).toFixed(1);
 				const avgCsTotal = (sum.csTotal/games).toFixed(0);
 				const avgCsM = (sum.csAverage/games).toFixed(1);
+				const avgCsAt10 = (sum.csAt10/games).toFixed(1);
+				const gameTime = (((sum.totalTime[0] * 60) + sum.totalTime[1]) / 3600).toFixed(2);
 
 				// Display output
 				const embed = new MessageEmbed()
@@ -135,11 +142,11 @@ export const summary: command = {
 					.setThumbnail(`attachment://${sortedChamps[0][0]}.png`)
 					.addFields(
 						{ name: 'Winrate', value: `${winrate}%`, inline: true },
-						{ name: 'Games Played', value: `${games}`, inline: true },
-						{ name: '\u200b', value: '\u200b', inline: true },
-						{ name: 'Average KDA', value: `${avgKills}/${avgDeaths}/${avgAssists}`, inline: true },
-						{ name: 'Average CS', value: `${avgCsTotal} (${avgCsM})`, inline: true },
-						{ name: '\u200b', value: '\u200b', inline: true },
+						{ name: 'Games', value: `${games}`, inline: true },
+						{ name: 'Total Hours', value: `${gameTime}`, inline: true },
+						{ name: 'Avg KDA', value: `${avgKills}/${avgDeaths}/${avgAssists}`, inline: true },
+						{ name: 'Avg CS', value: `${avgCsTotal} (${avgCsM})`, inline: true },
+						{ name: 'Avg CS @ 10m', value: `${avgCsAt10}`, inline: true },
 						{ name: 'Top Champs', value: `${displayChamps.join('\n')}`, inline: true },
 						{ name: 'Top Roles', value: `${displayRoles.join('\n')}`, inline: true },
 						{ name: '\u200b', value: '\u200b', inline: true },

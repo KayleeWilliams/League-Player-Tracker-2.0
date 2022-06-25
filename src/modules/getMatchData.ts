@@ -38,6 +38,7 @@ export const getMatchData = async (region: string,  puuid: string, matchId: stri
                     position: position,
                     csTotal: csTotal,
                     csAverage: csAverage,
+                    cs10: (participant.challenges.laneMinionsFirst10Minutes + participant.challenges.jungleCsBefore10Minutes),
                     gameLength: [gameMinutes, gameSeconds],
                     matchId: matchId,
                 };
