@@ -48,7 +48,7 @@ export const routing = async (input: string) => {
             break;
         case 'OCE':
             platform = 'oc1';
-            region = 'americas';
+            region = 'SEA';
             break;
         default:
             platform = null;
